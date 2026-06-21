@@ -6,6 +6,10 @@ plugins {
 //	id 'com.patbaumgartner.autoconfiguration-optimizer' version '1.0.0'
 }
 
+ext {
+	// Thay bằng phiên bản Spring AI mới nhất
+	set('springAiVersion', "2.0.0")
+}
 // buildscript {
 //     repositories {
 //         mavenLocal()
@@ -34,6 +38,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.2'
+	implementation 'org.springframework.ai:spring-ai-tika-document-reader'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	compileOnly 'org.projectlombok:lombok'
@@ -42,6 +47,11 @@ dependencies {
 	testCompileOnly 'org.projectlombok:lombok'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	testAnnotationProcessor 'org.projectlombok:lombok'
+}
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.ai:spring-ai-bom:$springAiVersion"
+	}
 }
 
 tasks.named('test') {

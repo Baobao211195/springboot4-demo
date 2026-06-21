@@ -4,3 +4,5 @@ management.metrics.enable.jvm: true
 logging:
    console:
       enabled: true
+   level:
+     org.apache.tika: DEBUG
