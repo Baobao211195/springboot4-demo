@@ -2,5 +2,41 @@ spring.application.name: spring-aot-demo
 management.endpoints.web.exposure.include: '*'
 management.metrics.enable.jvm: true
 logging:
+   level:
+      root: INFO
+      com.example.demo: DEBUG
+      # Enable Kafka logs for debugging
+      org.springframework.kafka: warn
+      org.apache.kafka: warn
    console:
       enabled: true
+spring:
+   kafka:
+      bootstrap-servers: 127.0.0.1:9092
+      listener:
+         ack-mode: record
+         concurrency: 3
+         observation-enabled: true
+      template:
+         observation-enabled: true
+
+      producer:
+         acks: all
+         key-serializer: org.apache.kafka.common.serialization.StringSerializer
+         value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+         batch-size: 16384
+         buffer-memory: 33554432
+         properties:
+           max.in.flight.requests.per.connection: 3
+           spring.json.add.type.headers: true
+
+      consumer:
+         # Resetting the consumer group to ensure we read from the beginning
+         group-id: orders-consumer-group-v7
+         auto-offset-reset: earliest
+         key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+         value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+         properties:
+           spring.json.trusted.packages: "*"
+      admin:
+         auto-create: true

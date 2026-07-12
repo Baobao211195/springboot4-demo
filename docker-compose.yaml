@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # ==========================================
+  # MySQL Database
+  # ==========================================
+  mysql:
+    image: mysql:8.0
+    container_name: my-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword # Đổi mật khẩu root tại đây
+      MYSQL_DATABASE: mydatabase        # Tên DB tự động tạo khi chạy lần đầu
+      MYSQL_USER: myuser                # User tự động tạo
+      MYSQL_PASSWORD: mypassword        # Mật khẩu cho user
+    volumes:
+      - mysql_data:/var/lib/mysql       # Ánh xạ volume để lưu trữ dữ liệu
+    restart: unless-stopped
+
+  # ==========================================
+  # Kafka (KRaft Mode - Không cần Zookeeper)
+  # ==========================================
+  kafka:
+    image: confluentinc/cp-kafka:7.6.1
+    container_name: kafka-correct
+    ports:
+      - "9092:9092"
+    environment:
+      # --- KRaft settings ---
+      KAFKA_BROKER_ID: 1
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:9093'
+      # --- Replace with your new Cluster ID from Step 2 ---
+      CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
+
+      # --- Listener settings ---
+      KAFKA_LISTENERS: 'INTERNAL://:29092,CONTROLLER://:9093,EXTERNAL://:9092'
+      KAFKA_ADVERTISED_LISTENERS: 'INTERNAL://kafka:29092,EXTERNAL://localhost:9092'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'INTERNAL'
+
+      # --- Settings for single-node cluster ---
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+
+    restart: unless-stopped
+
+# ==========================================
+# Khai báo Volumes để dữ liệu được persistent
+# ==========================================
+volumes:
+  mysql_data:
+    name: mysql_persistent_data
+  kafka_data:
+    name: kafka_persistent_data
