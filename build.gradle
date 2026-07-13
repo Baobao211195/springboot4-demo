@@ -20,8 +20,19 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3'
+//	implementation("io.temporal:temporal-spring-boot-starter:1.36.1")
+
 	implementation 'org.springframework.boot:spring-boot-starter-kafka'
+	implementation(platform("io.namastack:namastack-outbox-bom:1.7.1"))
+	implementation("io.namastack:namastack-outbox-starter-jdbc")
+	implementation("io.namastack:namastack-outbox-jackson:1.7.1")
+
+	runtimeOnly("com.mysql:mysql-connector-j:9.7.0")
+
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	compileOnly 'org.projectlombok:lombok'

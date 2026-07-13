@@ -1,0 +1,9 @@
+spring.application.name: spring-aot-demo
+management.endpoints.web.exposure.include: '*'
+management.metrics.enable.jvm: true
+logging:
+   level:
+      root: INFO
+      com.example.demo: DEBUG
+   console:
+      enabled: true
