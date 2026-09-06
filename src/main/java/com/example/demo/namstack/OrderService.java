@@ -25,9 +25,9 @@ public class OrderService {
         orderRepository.save(order);
 
         // Schedule event - saved atomically with the order
-        outbox.schedule(
-            new OrderCreatedEvent(order.getId(), order.getName(), order.getAge(), order.getAddress()),
-            "order-" + order.getId()  // Groups records for ordered processing
-        );
+//        outbox.schedule(
+//            new OrderCreatedEvent(order.getId(), order.getName(), order.getAge(), order.getAddress()),
+//            "order-" + order.getId()  // Groups records for ordered processing
+//        );
     }
 }

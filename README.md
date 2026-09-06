@@ -80,3 +80,7 @@ Dưới đây là mô tả về các thành phần chính trong project:
 5.  `KafkaProducerService` sử dụng `KafkaTemplate` để serialize đối tượng `User` thành JSON và gửi đến topic `demo-topic`.
 6.  `HelloConsumer` đang lắng nghe trên `demo-topic`, nhận được message JSON, deserialize nó trở lại thành đối tượng `User` và ghi log ra console.
 7.  `LoggingFilter` ghi log thông tin của response trả về cho client.
+
+## 5. Apply cdc
+
+
