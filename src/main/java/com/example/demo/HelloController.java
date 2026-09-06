@@ -30,4 +30,10 @@ public class HelloController {
          orderService.createOrder(order);
          return order.name();
     }
+
+    @PostMapping("/order/{id}")
+    public String order(@PathVariable Long id, @RequestBody OrderCreatedEvent order) {
+        orderService.updateOrder(id, order);
+        return order.name();
+    }
 }

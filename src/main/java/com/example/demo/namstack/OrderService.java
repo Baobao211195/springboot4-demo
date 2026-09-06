@@ -30,4 +30,12 @@ public class OrderService {
 //            "order-" + order.getId()  // Groups records for ordered processing
 //        );
     }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void updateOrder(Long id, OrderCreatedEvent command) {
+        Order order = command.toOrder();
+        order.setId(id);
+        log.info("Update order: {}", order);
+        orderRepository.save(order);
+    }
 }
