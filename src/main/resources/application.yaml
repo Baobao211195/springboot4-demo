@@ -26,22 +26,17 @@ spring:
          observation-enabled: true
 
       producer:
-         acks: all
-         key-serializer: org.apache.kafka.common.serialization.StringSerializer
          value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-         batch-size: 16384
-         buffer-memory: 33554432
          properties:
-           max.in.flight.requests.per.connection: 3
            spring.json.add.type.headers: true
 
       consumer:
          # Resetting the consumer group to ensure we read from the beginning
-         group-id: orders-consumer-group-v7
+         group-id: orders-1
          auto-offset-reset: earliest
-         key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
          value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
          properties:
            spring.json.trusted.packages: "*"
+           spring.json.use.type.headers: true
       admin:
          auto-create: true

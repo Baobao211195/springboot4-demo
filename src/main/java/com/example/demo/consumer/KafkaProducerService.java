@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Slf4j
 @Service
 public class KafkaProducerService {
@@ -17,7 +19,7 @@ public class KafkaProducerService {
 
     public void sendMessage(HelloController.User message) {
         log.info("Sending message to Kafka: {}", message);
-        this.kafkaTemplate.send("demo-topic-3", message)
+        this.kafkaTemplate.send("demo-topic-8", String.valueOf(message.id()), message)
             .whenComplete((result, ex) -> {
                 if (ex == null) {
                     log.info("Message sent successfully to topic {} partition {} offset {}",
