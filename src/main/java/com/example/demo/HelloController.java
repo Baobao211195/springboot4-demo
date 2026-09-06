@@ -36,4 +36,10 @@ public class HelloController {
         orderService.updateOrder(id, order);
         return order.name();
     }
+
+    @DeleteMapping("/order/{id}")
+    public String order(@PathVariable Long id) {
+        orderService.deleteOrder(id);
+        return String.valueOf(id);
+    }
 }

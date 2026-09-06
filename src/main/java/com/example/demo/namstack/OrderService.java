@@ -38,4 +38,9 @@ public class OrderService {
         log.info("Update order: {}", order);
         orderRepository.save(order);
     }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteOrder(Long id) {
+        orderRepository.deleteById(id);
+    }
 }

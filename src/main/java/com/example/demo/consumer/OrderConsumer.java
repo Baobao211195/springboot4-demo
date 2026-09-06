@@ -4,6 +4,7 @@ import com.example.demo.cdc.OrderCdcEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.ObjectMapper;
 
@@ -23,7 +24,11 @@ public class OrderConsumer {
             groupId = "${spring.kafka.consumer.group-id}",
             containerFactory = "cdcKafkaListenerContainerFactory"
     )
-    public void consume(String message) {
+    public void consume(@Payload(required = false) String message) {
+        if (message == null) {
+            log.info("========== ORDER CDC TOMBSTONE ==========");
+            return;
+        }
 
         OrderCdcEvent event =
                 objectMapper.readValue(message, OrderCdcEvent.class);
