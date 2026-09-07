@@ -31,13 +31,13 @@ public class LoggingFilter extends OncePerRequestFilter {
         String requestBody = getStringValue(requestWrapper.getContentAsByteArray(), request.getCharacterEncoding());
         String responseBody = getStringValue(responseWrapper.getContentAsByteArray(), response.getCharacterEncoding());
 
-        logger.info(
-                "FINISHED PROCESSING : METHOD=" + request.getMethod()
-                + "; REQUESTURI=" + request.getRequestURI()
-                + "; REQUEST PAYLOAD=" + requestBody
-                + "; RESPONSE CODE=" + response.getStatus()
-                + "; RESPONSE=" + responseBody
-                + "; TIME TAKEN=" + timeTaken);
+//        logger.info(
+//                "FINISHED PROCESSING : METHOD=" + request.getMethod()
+//                + "; REQUESTURI=" + request.getRequestURI()
+//                + "; REQUEST PAYLOAD=" + requestBody
+//                + "; RESPONSE CODE=" + response.getStatus()
+//                + "; RESPONSE=" + responseBody
+//                + "; TIME TAKEN=" + timeTaken);
         responseWrapper.copyBodyToResponse();
     }
 

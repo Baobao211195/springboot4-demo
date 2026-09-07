@@ -8,8 +8,7 @@ logging:
       # Enable Kafka logs for debugging
       org.springframework.kafka: warn
       org.apache.kafka: warn
-   console:
-      enabled: true
+      opentelemetry: off
 spring:
    datasource:
       url: jdbc:mysql://localhost:3306/mydatabase?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Ho_Chi_Minh&characterEncoding=UTF-8
@@ -40,3 +39,12 @@ spring:
            spring.json.use.type.headers: true
       admin:
          auto-create: true
+
+bootui:
+   path: /dev-console
+   enabled: on
+   transactions.enabled: on
+   telemetry.enabled: on
+management:
+   opentelemetry:
+      enabled: off

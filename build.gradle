@@ -32,12 +32,9 @@ dependencies {
 	implementation("io.namastack:namastack-outbox-starter-jdbc")
 	implementation("io.namastack:namastack-outbox-kafka:1.7.2")
 	implementation("io.namastack:namastack-outbox-jackson:1.7.1")
-//	implementation 'org.springframework.boot:spring-boot-starter-batch'
+	implementation("com.julien-dubois.bootui:bootui-spring-boot-starter:1.16.0")
 
 	runtimeOnly("com.mysql:mysql-connector-j:9.7.0")
-
-	runtimeOnly("com.skillsjars:jabrena__cursor-rules-java__301-frameworks-spring-boot-core:2026_04_23-9d8c173")
-
 
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
