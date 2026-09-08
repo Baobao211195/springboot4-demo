@@ -84,3 +84,12 @@ Dưới đây là mô tả về các thành phần chính trong project:
 ## 5. Apply cdc
 
 
+```sql
+create table orders
+(
+    id      bigint       null,
+    name    varchar(20)  null,
+    age     varchar(50)  null,
+    address varchar(500) null
+);
+```
