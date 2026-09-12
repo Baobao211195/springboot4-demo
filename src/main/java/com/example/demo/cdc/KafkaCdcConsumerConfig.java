@@ -16,35 +16,25 @@ import java.util.Map;
 public class KafkaCdcConsumerConfig {
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, String>
-    cdcKafkaListenerContainerFactory(
+    public ConcurrentKafkaListenerContainerFactory<String, String> cdcKafkaListenerContainerFactory(
             ConsumerFactory<String, String> cdcConsumerFactory) {
-
-        var factory =
-                new ConcurrentKafkaListenerContainerFactory<String, String>();
-
+        var factory = new ConcurrentKafkaListenerContainerFactory<String, String>();
         factory.setConsumerFactory(cdcConsumerFactory);
-
         return factory;
     }
 
     @Bean
-    public ConsumerFactory<String, String> cdcConsumerFactory(
-            KafkaProperties kafkaProperties) {
+    public ConsumerFactory<String, String> cdcConsumerFactory(KafkaProperties kafkaProperties) {
 
-        Map<String, Object> props =
-                new HashMap<>(kafkaProperties.buildConsumerProperties());
-
+        var props = new HashMap<>(kafkaProperties.buildConsumerProperties());
         props.put(
-                ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
-                StringDeserializer.class
+            ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
+            StringDeserializer.class
         );
-
         props.put(
-                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-                StringDeserializer.class
+            ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
+            StringDeserializer.class
         );
-
         return new DefaultKafkaConsumerFactory<>(props);
     }
 }
