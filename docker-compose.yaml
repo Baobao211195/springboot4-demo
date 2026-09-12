@@ -1,10 +1,14 @@
-
 services:
+
+  # ============================================================
+  # MySQL
+  # ============================================================
   mysql:
     image: mysql:8.0
     container_name: my-mysql
     ports:
       - "3306:3306"
+
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: mydatabase
@@ -12,36 +16,60 @@ services:
       MYSQL_PASSWORD: mypassword
     volumes:
       - mysql_data:/var/lib/mysql
+
     restart: unless-stopped
 
+
+  # ============================================================
+  # Kafka 4.1.1 - KRaft
+  # ============================================================
   kafka:
     image: apache/kafka:4.1.1
     container_name: my-kafka
+
     ports:
       - "9092:9092"
 
     environment:
+
+      # --------------------------------------------------------
       # KRaft
+      # --------------------------------------------------------
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
+
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@my-kafka:9093
 
+      # --------------------------------------------------------
       # Listeners
+      # --------------------------------------------------------
       KAFKA_LISTENERS: "INTERNAL://:29092,EXTERNAL://:9092,CONTROLLER://:9093"
+
       KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka:29092,EXTERNAL://localhost:9092"
+
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT"
+
       KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
+
       KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
 
-      # Single-node KRaft
+      # --------------------------------------------------------
+      # Single node
+      # --------------------------------------------------------
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
 
+      # --------------------------------------------------------
       # Development
+      # --------------------------------------------------------
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
 
-      # Keep the same cluster id
+      # --------------------------------------------------------
+      # Keep the same cluster ID
+      # --------------------------------------------------------
       CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
 
     volumes:
@@ -50,28 +78,28 @@ services:
     restart: unless-stopped
 
 
-  kafbat-ui:
-    image: kafbat/kafka-ui:latest
-    container_name: kafbat-ui
-    ports:
-      - "8081:8080"
-    environment:
-      KAFKA_CLUSTERS_0_NAME: local
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
-    depends_on:
-      - kafka
-    restart: unless-stopped
-
-    # debezium
+  # ============================================================
+  # Debezium Kafka Connect
+  # ============================================================
   debezium:
     image: quay.io/debezium/connect:3.2
     container_name: debezium-connect
+
     ports:
       - "8083:8083"
+
     environment:
-      BOOTSTRAP_SERVERS: kafka:29092 # vi kafka chay trong container
+
+      # --------------------------------------------------------
+      # Kafka
+      # --------------------------------------------------------
+      BOOTSTRAP_SERVERS: kafka:29092
+
       GROUP_ID: 1
 
+      # --------------------------------------------------------
+      # Kafka Connect internal topics
+      # --------------------------------------------------------
       CONFIG_STORAGE_TOPIC: connect_configs
       OFFSET_STORAGE_TOPIC: connect_offsets
       STATUS_STORAGE_TOPIC: connect_status
@@ -80,6 +108,9 @@ services:
       OFFSET_STORAGE_REPLICATION_FACTOR: 1
       STATUS_STORAGE_REPLICATION_FACTOR: 1
 
+      # --------------------------------------------------------
+      # JSON converter
+      # --------------------------------------------------------
       KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
       VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
 
@@ -89,10 +120,89 @@ services:
     depends_on:
       - kafka
       - mysql
+
     restart: unless-stopped
 
+
+  # ============================================================
+  # ksqlDB Server
+  # ============================================================
+  ksqldb-server:
+    image: confluentinc/cp-ksqldb-server:8.1.5
+    hostname: ksqldb-server
+    container_name: ksqldb-server
+
+    ports:
+      - "8088:8088"
+
+    environment:
+
+      # --------------------------------------------------------
+      # Kafka
+      # --------------------------------------------------------
+      KSQL_BOOTSTRAP_SERVERS: kafka:29092
+
+      # --------------------------------------------------------
+      # REST API
+      # --------------------------------------------------------
+      KSQL_LISTENERS: http://0.0.0.0:8088
+
+      # --------------------------------------------------------
+      # ksqlDB service ID
+      # --------------------------------------------------------
+      KSQL_KSQL_SERVICE_ID: ksqldb_local
+
+      # --------------------------------------------------------
+      # Single-node Kafka
+      # --------------------------------------------------------
+      KSQL_KSQL_INTERNAL_TOPIC_REPLICATION_FACTOR: 1
+
+      KSQL_KSQL_SINK_REPLICATION_FACTOR: 1
+
+    depends_on:
+      - kafka
+
+    restart: unless-stopped
+
+
+  # ============================================================
+  # Kafbat UI
+  # ============================================================
+  kafbat-ui:
+    image: kafbat/kafka-ui:latest
+    container_name: kafbat-ui
+
+    ports:
+      - "8081:8080"
+
+    environment:
+
+      # --------------------------------------------------------
+      # Kafka cluster
+      # --------------------------------------------------------
+      KAFKA_CLUSTERS_0_NAME: local
+
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+
+      # --------------------------------------------------------
+      # ksqlDB
+      # --------------------------------------------------------
+      KAFKA_CLUSTERS_0_KSQLDBSERVER: http://ksqldb-server:8088
+
+    depends_on:
+      - kafka
+      - ksqldb-server
+
+    restart: unless-stopped
+
+
+# ==============================================================
+# Persistent volumes
+# ==============================================================
 volumes:
+
   mysql_data:
     name: mysql_persistent_data_1
+
   kafka_data:
     name: kafka_persistent_data_1

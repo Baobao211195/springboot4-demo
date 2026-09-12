@@ -10,6 +10,7 @@ logging:
       org.springframework.kafka: warn
       org.apache.kafka: warn
       opentelemetry: off
+      org.apache.kafka.streams: warn
 spring:
    boot.admin.context-path: /admin
    datasource:
@@ -42,6 +43,10 @@ spring:
       admin:
          auto-create: true
 
+      streams:
+         application-id: order-stream-app
+         properties:
+            default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
 bootui:
    path: /dev-console
    enabled: on

@@ -29,6 +29,8 @@ dependencies {
 	implementation 'de.codecentric:spring-boot-admin-starter-server:4.1.2'
 
 	implementation 'org.springframework.boot:spring-boot-starter-kafka'
+	implementation 'org.apache.kafka:kafka-streams'
+
 	implementation(platform("io.namastack:namastack-outbox-bom:1.7.1"))
 	implementation("io.namastack:namastack-outbox-starter-jdbc")
 	implementation("io.namastack:namastack-outbox-kafka:1.7.2")
